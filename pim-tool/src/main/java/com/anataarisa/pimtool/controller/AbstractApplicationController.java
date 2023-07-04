@@ -1,5 +1,9 @@
 package com.anataarisa.pimtool.controller;
 
-public interface AbstractApplicationController {
+import com.anataarisa.pimtool.utils.ApplicationMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
+public abstract class AbstractApplicationController {
+    @Autowired
+    ApplicationMapper mapper;
 }
