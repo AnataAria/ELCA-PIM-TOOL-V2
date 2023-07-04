@@ -1,6 +1,6 @@
 package com.anataarisa.pimtool.model.exception;
 
-public class BaseException extends Exception{
+public class BaseException extends RuntimeException{
     private String message;
     public BaseException(String message, Throwable cause) {
         super(message, cause);

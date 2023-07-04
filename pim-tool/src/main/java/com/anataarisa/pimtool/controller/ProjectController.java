@@ -33,7 +33,7 @@ public class ProjectController extends AbstractApplicationController {
     @PostMapping("/")
     public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectDto initProject){
 
-        this.projectService.createProject(initProject);
+//        this.projectService.createProject(initProject);
         return new ResponseEntity<>(initProject,HttpStatus.OK);
     }
 }

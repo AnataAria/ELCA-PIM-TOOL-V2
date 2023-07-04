@@ -3,6 +3,8 @@ package com.anataarisa.pimtool.service;
 import com.anataarisa.pimtool.model.dto.ProjectDto;
 import com.anataarisa.pimtool.model.entity.Project;
 import com.anataarisa.pimtool.model.exception.EntitySearchNotFoundException;
+import com.anataarisa.pimtool.model.exception.MandatoryIsEmptyException;
+import com.anataarisa.pimtool.model.exception.ProjectNumberAlreadyExistsException;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;

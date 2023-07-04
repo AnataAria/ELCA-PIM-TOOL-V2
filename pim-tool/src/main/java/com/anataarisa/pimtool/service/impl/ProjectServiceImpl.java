@@ -4,6 +4,8 @@ import com.anataarisa.pimtool.model.dto.ProjectDto;
 import com.anataarisa.pimtool.model.entity.Employee;
 import com.anataarisa.pimtool.model.entity.Project;
 import com.anataarisa.pimtool.model.exception.EntitySearchNotFoundException;
+import com.anataarisa.pimtool.model.exception.MandatoryIsEmptyException;
+import com.anataarisa.pimtool.model.exception.ProjectNumberAlreadyExistsException;
 import com.anataarisa.pimtool.repository.EmployeeRepository;
 import com.anataarisa.pimtool.repository.GroupRepository;
 import com.anataarisa.pimtool.repository.ProjectRepository;
@@ -11,6 +13,7 @@ import com.anataarisa.pimtool.service.EmployeeService;
 import com.anataarisa.pimtool.service.GroupService;
 import com.anataarisa.pimtool.service.ProjectService;
 import com.anataarisa.pimtool.utils.ApplicationMapper;
+import com.anataarisa.pimtool.validation.ApplicationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -27,15 +30,16 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final GroupService groupService;
     private final EmployeeService employeeService;
-
+    private final ApplicationValidator applicationValidator;
     private final ApplicationMapper mapper;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, GroupService groupService, EmployeeService employeeService, ApplicationMapper mapper){
+    public ProjectServiceImpl(ProjectRepository projectRepository, GroupService groupService, EmployeeService employeeService, ApplicationMapper mapper, ApplicationValidator applicationValidator) {
         this.projectRepository = projectRepository;
         this.groupService = groupService;
         this.employeeService = employeeService;
         this.mapper = mapper;
+        this.applicationValidator = applicationValidator;
     }
 
 
@@ -61,32 +65,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Optional<Project> createProject(ProjectDto project) {
-        Project data = null;
-        try{
-            data = mapper.projectDtoToProject(project);
-            List<String> projectVisa = project.getEmployeeVisa();
-            if(projectVisa != null){
-                Set<Employee> employee = employeeService.getEmployeesByVisa(new HashSet<>(projectVisa));
-                if(employee != null){
-                    data.setEmployees(employee);
-                }
-            }
-
-        }catch(EntitySearchNotFoundException e){
-            e.printStackTrace();
-        }catch(Exception e){
-
+    public Optional<Project> createProject(ProjectDto projectDto){
+        Project project = null;
+        Set<String> errorsMessage = applicationValidator.validate(projectDto);
+        if(!errorsMessage.isEmpty()){
+            throw new MandatoryIsEmptyException("");
         }
-        try{
-            if (data != null) {
-                projectRepository.saveAndFlush(data);
-            }
-        }catch(Exception e){
-
-        }
-
-        return Optional.of(data);
+        return Optional.empty();
     }
 
 
