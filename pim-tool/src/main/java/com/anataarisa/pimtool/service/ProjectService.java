@@ -11,9 +11,12 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface ProjectService {
-    public Optional<Project> getProjectByID(Number projectID) throws EntitySearchNotFoundException;
+    public Optional<Project> getProjectByID(Long projectID);
     public Set<Project> findAllProjects();
     public Page<Project> findProjectInPage(Integer page);
-    public Page<Project> findProjectSearchInPage(Integer page);
+    public Page<Project> findProjectSearchInPage(Integer page, String searchRequest, String requestStatus);
     public Optional<Project> createProject(ProjectDto project);
+
+    public Optional<Project> updateProject(ProjectDto project);
+    public void deleteProject(Long projectId);
 }

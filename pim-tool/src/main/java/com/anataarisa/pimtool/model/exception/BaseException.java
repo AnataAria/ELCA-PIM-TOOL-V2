@@ -1,19 +1,23 @@
 package com.anataarisa.pimtool.model.exception;
 
-public class BaseException extends RuntimeException{
-    private String message;
-    public BaseException(String message, Throwable cause) {
-        super(message, cause);
-    }
+import java.util.Set;
 
+public class BaseException extends RuntimeException {
+    private Set<String> errors;
     public BaseException(String message){
         super(message);
     }
 
-    public String getMessage(){
-        return this.message;
+    public BaseException(String message, Set<String> errors){
+        super(message);
+        this.errors = errors;
     }
-    public void setMessage(String message){
-        this.message = message;
+
+    public Set<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(Set<String> errors) {
+        this.errors = errors;
     }
 }

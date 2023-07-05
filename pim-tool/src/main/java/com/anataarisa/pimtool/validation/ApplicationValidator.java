@@ -15,7 +15,7 @@ public class ApplicationValidator<T> {
 
     public Set<String> validate(T validateObject){
         Set<ConstraintViolation<T>>violations = validator.validate(validateObject);
-        if(violations.isEmpty()){
+        if(!violations.isEmpty()){
             return violations.stream()
                     .map(ConstraintViolation::getMessage)
                     .collect(Collectors.toSet());

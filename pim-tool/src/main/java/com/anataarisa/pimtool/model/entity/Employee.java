@@ -18,7 +18,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", columnDefinition = "bigint")
     private Long id;
-    @Column(name = "VISA", nullable = false)
+    @Column(name = "VISA", nullable = false, unique = true)
     private String visa;
     @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,13 +18,13 @@ public class ErrorMessage {
     private Date timestamp;
     private HttpStatus status;
     private String message;
-    private String errorMessage;
+    private String errors;
 
-    public ErrorMessage(HttpStatus status, String message, String errorMessage) {
+    public ErrorMessage(HttpStatus status, String message, List<String> errorMessage) {
         this();
         this.status = status;
         this.message = message;
-        this.errorMessage = errorMessage;
+        this.errors = String.join("\n", errorMessage);
     }
 
     public ErrorMessage(){

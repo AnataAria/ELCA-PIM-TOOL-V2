@@ -1,28 +1,38 @@
 package com.anataarisa.pimtool.controller.exception;
 
-import com.anataarisa.pimtool.model.exception.EntitySearchNotFoundException;
-import com.anataarisa.pimtool.model.exception.ErrorMessage;
-import com.anataarisa.pimtool.model.exception.MandatoryIsEmptyException;
-import org.springframework.http.HttpRequest;
+import com.anataarisa.pimtool.model.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+
+import java.util.ArrayList;
 
 @RestControllerAdvice
 public class ApplicationExceptionController {
     @ExceptionHandler(EntitySearchNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorMessage> entityNotFoundException(EntitySearchNotFoundException entitySearchNotFoundException, WebRequest request) {
-        return new ResponseEntity<>(new ErrorMessage(HttpStatus.NOT_FOUND, entitySearchNotFoundException.getMessage(),entitySearchNotFoundException.getCause().toString()), HttpStatus.BAD_REQUEST) ;
+    public ResponseEntity<?> entityNotFoundException(EntitySearchNotFoundException entitySearchNotFoundException) {
+        return new ResponseEntity<>(new ErrorMessage(HttpStatus.NOT_FOUND, entitySearchNotFoundException.getMessage(), new ArrayList<>(entitySearchNotFoundException.getErrors())), HttpStatus.NOT_FOUND) ;
     }
 
     @ExceptionHandler(MandatoryIsEmptyException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorMessage> mandatoryIsEmptyException(MandatoryIsEmptyException mandatoryIsEmptyException, WebRequest request) {
-        return new ResponseEntity<>(new ErrorMessage(HttpStatus.NOT_FOUND, mandatoryIsEmptyException.getMessage(),mandatoryIsEmptyException.getCause().toString()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> mandatoryIsEmptyException(MandatoryIsEmptyException mandatoryIsEmptyException) {
+        ErrorMessage em =new ErrorMessage(HttpStatus.BAD_REQUEST, mandatoryIsEmptyException.getMessage(),new ArrayList<>(mandatoryIsEmptyException.getErrors()));
+        return new ResponseEntity<>(em, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(PermissionNotAllowException.class)
+    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+    public ResponseEntity<?> permissionNotAllowException(PermissionNotAllowException permissionNotAllowException) {
+        return new ResponseEntity<>(new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, permissionNotAllowException.getMessage(), new ArrayList<>(permissionNotAllowException.getErrors())), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ProjectNumberAlreadyExistsException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> projectNumberAlreadyExistException(ProjectNumberAlreadyExistsException projectNumberAlreadyExistsException){
+        return new ResponseEntity<>(new ErrorMessage(HttpStatus.BAD_REQUEST, projectNumberAlreadyExistsException.getMessage(),new ArrayList<>(projectNumberAlreadyExistsException.getErrors())), HttpStatus.BAD_REQUEST);
+    }
 }

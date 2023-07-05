@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Data
@@ -19,13 +20,13 @@ public class EmployeeDto {
     @Max(value = 19, message ="Employee ID isn't valid")
     private Long id;
     @NotEmpty(message = "Visa field should not be empty")
-    @Max(value = 19, message ="Visa isn't valid")
+    @Size(min = 3, max = 3, message = "Visa field should have 3 characters")
     private String visa;
     @NotEmpty(message = "First Name field should not be empty")
-    @Max(value = 50, message ="First Name max length is 50")
+    @Size(min=3, max=50, message = "First name field length should be between 3 and 50")
     private String firstName;
     @NotEmpty(message = "Last Name field should not be empty")
-    @Max(value = 50, message ="Last Name max length is 50")
+    @Size(min=3, max=50, message = "Last name field length should be between 3 and 50")
     private String lastName;
     @NotNull(message = "Birthday field should not be empty")
     private Date birthDate;
