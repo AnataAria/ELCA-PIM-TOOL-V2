@@ -14,6 +14,7 @@ public interface ProjectService {
     public Optional<Project> getProjectByID(Long projectID);
     public Set<Project> findAllProjects();
     public Page<Project> findProjectInPage(Integer page);
+    public Optional<Project> getProjectByProjectNumber(Long projectNumber);
     public Page<Project> findProjectSearchInPage(Integer page, String searchRequest, String requestStatus);
     public Optional<Project> createProject(ProjectDto project);
 

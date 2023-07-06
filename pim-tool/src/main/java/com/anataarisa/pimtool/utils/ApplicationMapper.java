@@ -18,7 +18,6 @@ public class ApplicationMapper {
 
     public ProjectDto projectToProjectDto(Project project){
         ProjectDto dto = new ProjectDto();
-        dto.setId(project.getId());
         dto.setGroupId(project.getGroupProject().getId());
         dto.setProjectNumber(project.getProjectNumber());
         dto.setName(project.getName());
@@ -40,7 +39,6 @@ public class ApplicationMapper {
 
     public Project projectDtoToProject(ProjectDto dto){
         Project project = new Project();
-        project.setId(dto.getId());
         project.setProjectNumber(dto.getProjectNumber());
         project.setName(dto.getName());
         project.setCustomer(dto.getCustomer());

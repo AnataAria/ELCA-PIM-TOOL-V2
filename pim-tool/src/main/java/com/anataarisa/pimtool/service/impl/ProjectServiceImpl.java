@@ -16,10 +16,7 @@ import com.anataarisa.pimtool.service.ProjectService;
 import com.anataarisa.pimtool.utils.ApplicationMapper;
 import com.anataarisa.pimtool.validation.ApplicationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +49,15 @@ public class ProjectServiceImpl implements ProjectService {
         if(project.isEmpty()) throw new EntitySearchNotFoundException("Project with ID " + projectID + " does not exist", Set.of("Project with ID" + projectID + " does not exist"));
         return project;
     }
+    @Override
+    public Optional<Project> getProjectByProjectNumber(Long ID){
+        Optional<Project> project = projectRepository.findProjectsByProjectNumber(ID);
+        if(project.isEmpty()) throw new EntitySearchNotFoundException("Project with number ID " + ID + " does not exist", Set.of("Project with Project Number" + ID + " does not exist"));
+        return project;
+    }
 
     @Override
-    public Set<Project> findAllProjects() {;
+    public Set<Project> findAllProjects() {
         return new HashSet<>(this.projectRepository.findAll());
     }
 
@@ -67,12 +70,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<Project> findProjectSearchInPage(Integer page, String searchRequest, String requestStatus) {
-        return null;
+        Sort sort = Sort.by("id").ascending().and(Sort.by("startDate").ascending());
+        Set<Project> list = new HashSet<>();
+        Pageable pageable = PageRequest.of(page - 1, maxPageSize, sort);
+        if(requestStatus == null){
+            list.addAll(new HashSet<>(projectRepository.findProjectsByProjectName(searchRequest)));
+            list.addAll(new HashSet<>(projectRepository.findProjectsByCustomerName(searchRequest)));
+        }
+        return new PageImpl<>(new ArrayList<>(list),pageable,list.size());
     }
+
 
     @Override
     public Optional<Project> createProject(ProjectDto projectDto){
-        projectDto.setId(null);
         Project project;
         Set<String> errorsMessage = applicationValidator.validate(projectDto);
         if(!errorsMessage.isEmpty()){
@@ -98,9 +108,11 @@ public class ProjectServiceImpl implements ProjectService {
         project = mapper.projectDtoToProject(projectDto);
         project.setGroupProject(groupService.findGroupById(projectDto.getGroupId()).get());
         project.setEmployees(employeeService.getEmployeesByVisa(new HashSet<>(projectDto.getEmployeeVisa())));
-        if(projectRepository.findById(project.getId()).isEmpty()){
-            throw new EntitySearchNotFoundException("Not found project with ID" + project.getId(), Set.of("Project ID:" + project.getId() + "does not exist"));
+        Optional<Project> temp = projectRepository.findProjectsByProjectNumber(project.getProjectNumber());
+        if(temp.isEmpty()){
+            throw new EntitySearchNotFoundException("Not found project with this number" + project.getId(), Set.of("Project number:" + project.getProjectNumber() + "does not exist"));
         }
+        project.setId(temp.get().getId());
         return Optional.of(projectRepository.saveAndFlush(project));
     }
 

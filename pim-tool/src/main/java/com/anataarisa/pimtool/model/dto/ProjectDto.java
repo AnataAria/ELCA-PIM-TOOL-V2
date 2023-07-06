@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ProjectDto {
-    private Long id;
 
     @NotNull(message = "Group ID field should not be null")
     @Max(value = 19, message ="Group ID size must be smaller than 19")
